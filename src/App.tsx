@@ -1,51 +1,40 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { lazy, Suspense, useState } from "react";
+import React, { Suspense } from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { Layout, Spin } from "antd";
+import Sidebar from "./components/sidebar/Sidebar";
+import Header from "./components/header/Header";
+import {
+  Analytica,
+  Cars,
+  Dashboard,
+  Settings,
+  Users,
+} from "./components/lazy/LazyComponent";
 
-// Lazy load pages
-const Sidebar = lazy(() => import("./ui/components/sidebar/Sidebar"));
-const Dashboard = lazy(
-  () => import("./features/dashboard/presentation/ui/Dashboard")
-);
-const Reports = lazy(
-  () => import("./features/reports/presentation/ui/Reports")
-);
-const Vehicles = lazy(
-  () => import("./features/vehicles/presentation/ui/Vehicles")
-);
-const Settings = lazy(
-  () => import("./features/settings/presentation/ui/Settings")
-);
-
-import { Layout } from "antd";
-const { Content } = Layout;
-
-const App = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-
-  const handleSidebarToggle = (isOpen: boolean) => {
-    setIsSidebarOpen(isOpen);
-  };
-
+const App: React.FC = () => {
   return (
     <Router>
-      <Layout>
-        <Suspense fallback={<div>Loading...</div>}>
-          <Sidebar onSidebarToggle={handleSidebarToggle} />
-        </Suspense>
-        <Layout
-          className="site-layout"
-          style={{ marginLeft: isSidebarOpen ? 200 : 120 }}
-        >
-          <Content style={{ margin: "24px 16px 0", overflow: "initial" }}>
-            <Suspense fallback={<div>Loading...</div>}>
+      <Layout style={{ minHeight: "100vh" }}>
+        <Sidebar />
+        <Layout>
+          <Header />
+          <Layout.Content style={{ padding: "0 24px", minHeight: 280 }}>
+            <Suspense
+              fallback={
+                <div style={{ textAlign: "center", marginTop: 50 }}>
+                  <Spin size="large" />
+                </div>
+              }
+            >
               <Routes>
-                <Route index element={<Dashboard />} />
-                <Route path="/reports" element={<Reports />} />
-                <Route path="/vehicles" element={<Vehicles />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/cars" element={<Cars />} />
+                <Route path="/analytyca" element={<Analytica />} />
+                <Route path="/users" element={<Users />} />
                 <Route path="/settings" element={<Settings />} />
               </Routes>
             </Suspense>
-          </Content>
+          </Layout.Content>
         </Layout>
       </Layout>
     </Router>

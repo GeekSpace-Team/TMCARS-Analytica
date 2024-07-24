@@ -1,0 +1,48 @@
+/* src/components/dashboardCards.css */
+.cards-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 50px;
+}
+
+.card {
+  width: 254px;
+  height: 231px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 6px;
+  padding: 24px;
+  box-shadow: 0px 12px 16px -4px rgba(12, 26, 36, 0.04);
+  backdrop-filter: blur(6px);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s, box-shadow 0.3s; /* Transition for hover effect */
+}
+
+.card:hover {
+  transform: scale(1.05); /* Slightly larger on hover */
+  box-shadow: 0px 16px 24px -4px rgba(12, 26, 36, 0.1); /* Stronger shadow on hover */
+}
+
+.card-icon {
+  font-size: 24px;
+  margin-bottom: 16px;
+}
+
+.card-title {
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 21px;
+  color: #64748b;
+  margin-bottom: 8px;
+}
+
+.card-count {
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+  font-size: 30px;
+  line-height: 41.1px;
+  color: #1e293b;
+  letter-spacing: -0.8px;
+}

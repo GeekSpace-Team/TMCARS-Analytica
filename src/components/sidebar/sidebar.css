@@ -1,0 +1,49 @@
+/* src/components/sidebar.css */
+.site-layout-background {
+  background: white;
+  color: black;
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  background: white;
+}
+
+.sidebar-logo {
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+}
+
+.sidebar-title {
+  color: black;
+  font-size: 18px;
+  margin: 0;
+}
+
+.ant-menu {
+  background: white;
+}
+
+.ant-menu-item {
+  color: #8f95b2 !important;
+}
+
+.ant-menu-item-selected {
+  background-color: #6c5dd3 !important;
+  color: white !important;
+}
+
+.ant-menu-item a {
+  color: white;
+}
+
+.ant-menu-item a:hover {
+  color: #6c5dd3;
+}
+
+.ant-menu-item:hover {
+  background: rgba(0, 0, 0, 0.1) !important;
+}
