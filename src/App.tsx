@@ -9,6 +9,7 @@ import {
   Dashboard,
   Settings,
   Users,
+  CarsAnalitica,
 } from "./components/lazy/LazyComponent";
 
 const App: React.FC = () => {
@@ -32,6 +33,7 @@ const App: React.FC = () => {
                 <Route path="/analytyca" element={<Analytica />} />
                 <Route path="/users" element={<Users />} />
                 <Route path="/settings" element={<Settings />} />
+                <Route path="/car-analytyca" element={<CarsAnalitica />} />
               </Routes>
             </Suspense>
           </Layout.Content>

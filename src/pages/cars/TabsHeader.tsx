@@ -48,16 +48,16 @@ const TabsHeader: React.FC = () => {
       }}
     >
       <StyledTabs defaultActiveKey="1">
-        <TabPane tab="Full Table" key="1">
+        <TabPane tab="Ählisi" key="1">
           <FullTable />
         </TabPane>
-        <TabPane tab="Monthly Table" key="2">
+        <TabPane tab="Aýlyk" key="2">
           <MonthlyTable />
         </TabPane>
-        <TabPane tab="Weekly Table" key="3">
+        <TabPane tab="Hepdelik" key="3">
           <WeeklyTable />
         </TabPane>
-        <TabPane tab="Daily Table" key="4">
+        <TabPane tab="Günlik" key="4">
           <DailyTable />
         </TabPane>
       </StyledTabs>

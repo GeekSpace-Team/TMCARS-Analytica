@@ -14,8 +14,9 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
-  padding: 20px;
   box-sizing: border-box;
+  margin-bottom: 40px;
+  margin-top: 20px;
 `;
 
 const SearchWrapper = styled.div`

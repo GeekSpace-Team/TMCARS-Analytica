@@ -36,6 +36,9 @@ const Sidebar: React.FC = () => {
         <Menu.Item key="/analytyca" icon={<BarChartOutlined />}>
           <Link to="/analytyca">Analytyca</Link>
         </Menu.Item>
+        <Menu.Item key="/car-analytyca" icon={<CarOutlined />}>
+          <Link to="/car-analytyca">Cars Analitica</Link>
+        </Menu.Item>
         <Menu.Item key="/users" icon={<UserOutlined />}>
           <Link to="/users">Users</Link>
         </Menu.Item>
