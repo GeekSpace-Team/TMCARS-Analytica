@@ -1,12 +1,11 @@
 import React from "react";
-import { Menu, Dropdown, Button } from "antd";
+import { Menu, Dropdown } from "antd";
 import {
   MoreOutlined,
   EyeOutlined,
   ImportOutlined,
   DeleteOutlined,
 } from "@ant-design/icons";
-import styled from "styled-components";
 import {
   BarChart,
   Bar,
@@ -16,105 +15,43 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  ChartContainer,
+  ChartTitle,
+  DeleteItem,
+  Divider,
+  MenuButton,
+  StyledMenuItem,
+} from "./annual";
 
-const Card = styled.div`
-  width: 100%;
-  padding: 20px;
-  background: #fff;
-  border-radius: 6px;
-  box-shadow: 0px 12px 16px -4px rgba(12, 26, 36, 0.04);
-  margin-top: 30px;
-  display: flex;
-  flex-direction: column;
-`;
+// Define props type
+interface AnnualAverageVehiclesProps {
+  dashboardData: {
+    price_correlation_year?: {
+      buckets: Array<{
+        key: number;
+        doc_count: number;
+        price_and_year: {
+          value: number;
+        };
+      }>;
+    };
+  };
+}
 
-const CardHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-`;
-
-const CardTitle = styled.span`
-  font-family: "Inter", sans-serif;
-  font-weight: 700;
-  font-size: 18px;
-  line-height: 24px;
-  color: #081735;
-`;
-
-const MenuButton = styled(Button)`
-  border: none;
-  background: none;
-  padding: 0;
-  font-size: 16px;
-  color: #1e293b;
-
-  &:hover {
-    color: #6c5dd3;
-  }
-`;
-
-const StyledMenuItem = styled(Menu.Item)`
-  font-family: "Inter", sans-serif;
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 20px;
-  color: #8f95b2;
-
-  &:hover {
-    background-color: #f5f5f5;
-  }
-`;
-
-const DeleteItem = styled(StyledMenuItem)`
-  color: #ff754c;
-`;
-
-const Divider = styled.div`
-  height: 1px;
-  background-color: #e0e0e0;
-  margin: 20px 0;
-`;
-
-const ChartContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start; /* Aligns title and chart to the left */
-`;
-
-const ChartTitle = styled.h2`
-  font-family: "Inter", sans-serif;
-  font-weight: 700;
-  font-size: 32px;
-  line-height: 32px;
-  color: #081735;
-  margin-bottom: 20px;
-  text-align: left; /* Align title to the left */
-`;
-
-const data = [
-  { month: "Jan", count: 10 },
-  { month: "Feb", count: 25 },
-  { month: "Mar", count: 20 },
-  { month: "Apr", count: 3 },
-  { month: "May", count: 7 },
-  { month: "Jun", count: 30 },
-  { month: "Jul", count: 5 },
-  { month: "Aug", count: 31 },
-  { month: "Sep", count: 9 },
-  { month: "Oct", count: 13 },
-  { month: "Nov", count: 20 },
-  { month: "Dec", count: 28 },
-];
-
-const AnnualAverageVehicles: React.FC = () => {
+const AnnualAverageVehicles: React.FC<AnnualAverageVehiclesProps> = ({
+  dashboardData,
+}) => {
   const [visible, setVisible] = React.useState<boolean>(false);
 
   const handleMenuClick = (e: { key: string }) => {
     console.log("Menu item clicked:", e);
   };
 
+  // Menu configuration
   const menu = (
     <Menu onClick={handleMenuClick} style={{ border: "none" }}>
       <StyledMenuItem key="view" icon={<EyeOutlined />}>
@@ -128,6 +65,16 @@ const AnnualAverageVehicles: React.FC = () => {
       </DeleteItem>
     </Menu>
   );
+
+  // Ensure dashboardData and price_correlation_year exist
+  const priceCorrelationData =
+    dashboardData?.price_correlation_year?.buckets || [];
+
+  // Transform data for BarChart
+  const chartData = priceCorrelationData.map((bucket) => ({
+    month: bucket.key.toString(),
+    count: bucket.price_and_year.value,
+  }));
 
   return (
     <Card>
@@ -146,7 +93,7 @@ const AnnualAverageVehicles: React.FC = () => {
       <ChartContainer>
         <ChartTitle>112,340 TMT</ChartTitle>
         <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={data}>
+          <BarChart data={chartData}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="month" tick={{ fontSize: 12, fill: "#8f95b2" }} />
             <YAxis tick={{ fontSize: 12, fill: "#8f95b2" }} />

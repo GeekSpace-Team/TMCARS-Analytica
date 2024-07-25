@@ -1,173 +1,63 @@
-import React from "react";
-import { Menu, Dropdown, Button } from "antd";
+import React, { useEffect } from "react";
+import { Menu, Dropdown } from "antd";
 import {
   MoreOutlined,
   EyeOutlined,
   ImportOutlined,
   DeleteOutlined,
 } from "@ant-design/icons";
-import styled from "styled-components";
 import { PieChart, Pie, Tooltip, Cell, ResponsiveContainer } from "recharts";
+import {
+  CarCost,
+  Card,
+  CardHeader,
+  CardTitle,
+  CarInfo,
+  CarItem,
+  CarName,
+  ChartContainer,
+  ChartTitle,
+  ChartWrapper,
+  DeleteItem,
+  DetailsWrapper,
+  Divider,
+  HeaderTexts,
+  MenuButton,
+  StyledMenuItem,
+  Subtitle,
+} from "./top";
 
-const Card = styled.div`
-  width: 100%;
-  padding: 20px;
-  background: #fff;
-  border-radius: 6px;
-  box-shadow: 0px 12px 16px -4px rgba(12, 26, 36, 0.04);
-  margin-top: 30px;
-  display: flex;
-  flex-direction: column;
-`;
+// Define the types for the car and dashboard data
+interface CarData {
+  _source: {
+    markasy: string;
+    ady: string;
+    yyly: string;
+    bahasy: number;
+  };
+}
 
-const CardHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 20px;
-`;
+interface DashboardData {
+  top: CarData[];
+}
 
-const HeaderTexts = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
+interface TopCarsProps {
+  dashboardData: DashboardData;
+}
 
-const CardTitle = styled.span`
-  font-family: "Inter", sans-serif;
-  font-weight: 700;
-  font-size: 18px;
-  line-height: 24px;
-  color: #081735;
-`;
-
-const Subtitle = styled.p`
-  font-family: "Inter", sans-serif;
-  font-weight: 400;
-  font-size: 12px;
-  line-height: 16px;
-  color: #8f95b2;
-  margin: 5px 0 0 0; // Adjust margin as needed
-`;
-
-const MenuButton = styled(Button)`
-  border: none;
-  background: none;
-  padding: 0;
-  font-size: 16px;
-  color: #1e293b;
-
-  &:hover {
-    color: #6c5dd3;
-  }
-`;
-
-const StyledMenuItem = styled(Menu.Item)`
-  font-family: "Inter", sans-serif;
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 20px;
-  color: #8f95b2;
-
-  &:hover {
-    background-color: #f5f5f5;
-  }
-`;
-
-const DeleteItem = styled(StyledMenuItem)`
-  color: #ff754c;
-`;
-
-const Divider = styled.div`
-  height: 1px;
-  background-color: #e0e0e0;
-  margin: 20px 0;
-`;
-
-const ChartContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  gap: 20px; // Adjust gap as needed
-`;
-
-const ChartWrapper = styled.div`
-  flex: 3;
-`;
-
-const DetailsWrapper = styled.div`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  max-height: 300px; // Set max height to limit the visible area
-  overflow-y: auto; // Enable vertical scrolling
-  overflow-x: hidden; // Hide horizontal scrollbar
-  scrollbar-width: none; // Hide scrollbar for Firefox
-  -ms-overflow-style: none; // Hide scrollbar for Internet Explorer and Edge
-
-  ::-webkit-scrollbar {
-    display: none; // Hide scrollbar for WebKit browsers
-  }
-`;
-
-const CarItem = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 10px;
-`;
-
-const CarAvatar = styled.div`
-  width: 40px;
-  height: 40px;
-  background: #e0e0e0;
-  border-radius: 50%;
-`;
-
-const CarInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-const CarName = styled.span`
-  font-family: "Inter", sans-serif;
-  font-weight: 400;
-  font-size: 12px;
-  line-height: 16px;
-  color: #8f95b2;
-`;
-
-const CarCost = styled.span`
-  font-family: "Inter", sans-serif;
-  font-weight: 700;
-  font-size: 14px;
-  line-height: 20px;
-  color: #081735;
-`;
-
-const ChartTitle = styled.h2`
-  font-family: "Inter", sans-serif;
-  font-weight: 700;
-  font-size: 32px;
-  line-height: 32px;
-  color: #081735;
-  margin-bottom: 20px;
-  text-align: left;
-`;
-
-const data = [
-  { name: "Toyota", value: 400 },
-  { name: "Ford", value: 300 },
-  { name: "BMW", value: 300 },
-  { name: "Mercedes", value: 200 },
-  { name: "Audi", value: 100 },
-  { name: "Chevrolet", value: 180 },
-  { name: "Nissan", value: 150 },
-  { name: "Hyundai", value: 130 },
-  { name: "Kia", value: 120 },
-  { name: "Volkswagen", value: 110 },
-];
-
-const TopCars: React.FC = () => {
+const TopCars: React.FC<TopCarsProps> = ({ dashboardData }) => {
   const [visible, setVisible] = React.useState<boolean>(false);
+
+  useEffect(() => {
+    if (dashboardData && dashboardData.top) {
+      // Log max_price to the console
+      const prices = dashboardData.top.map((car) => car._source.bahasy);
+      const maxPrice = Math.max(...prices);
+      console.log("Max Price:", maxPrice);
+    } else {
+      console.log("Dashboard data or top field is undefined");
+    }
+  }, [dashboardData]);
 
   const handleMenuClick = (e: { key: string }) => {
     console.log("Menu item clicked:", e);
@@ -186,6 +76,17 @@ const TopCars: React.FC = () => {
       </DeleteItem>
     </Menu>
   );
+
+  // Ensure dashboardData is valid and contains top field
+  if (!dashboardData || !dashboardData.top) {
+    return <div>Error: Dashboard data is not available</div>;
+  }
+
+  // Prepare data for PieChart
+  const chartData = dashboardData.top.map((car: CarData) => ({
+    name: `${car._source.markasy} ${car._source.ady} ${car._source.yyly}`,
+    value: car._source.bahasy || 0,
+  }));
 
   return (
     <Card>
@@ -211,15 +112,15 @@ const TopCars: React.FC = () => {
             <PieChart>
               <Tooltip />
               <Pie
-                data={data}
+                data={chartData}
                 dataKey="value"
                 nameKey="name"
                 outerRadius={120}
                 innerRadius={40}
-                fill="#8884d8" // Default color for all slices
+                fill="#8884d8"
                 label
               >
-                {data.map((_, index) => (
+                {chartData.map((_, index: number) => (
                   <Cell key={`cell-${index}`} fill="#8884d8" />
                 ))}
               </Pie>
@@ -227,12 +128,12 @@ const TopCars: React.FC = () => {
           </ResponsiveContainer>
         </ChartWrapper>
         <DetailsWrapper>
-          {data.map((car) => (
-            <CarItem key={car.name}>
-              <CarAvatar />
+          {chartData.map((car, index: number) => (
+            <CarItem key={index}>
               <CarInfo>
                 <CarCost>{car.value} TMT</CarCost>
                 <CarName>{car.name}</CarName>
+                <hr />
               </CarInfo>
             </CarItem>
           ))}

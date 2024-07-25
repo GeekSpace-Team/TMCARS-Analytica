@@ -1,12 +1,13 @@
-// src/components/Header.tsx
 import React, { useState } from "react";
 import { Input } from "antd";
 import { SearchOutlined, MailOutlined, BellOutlined } from "@ant-design/icons";
 import { motion } from "framer-motion";
+import { useLocation } from "react-router-dom";
 import "./header.css";
 
 const Header: React.FC = () => {
   const [searchActive, setSearchActive] = useState(false);
+  const location = useLocation();
 
   const handleSearchFocus = () => {
     setSearchActive(true);
@@ -16,20 +17,41 @@ const Header: React.FC = () => {
     setSearchActive(false);
   };
 
+  const getGreetingText = (pathname: string) => {
+    switch (pathname) {
+      case "/dashboard":
+        return "Salam Halil, hoş geldiňiz!";
+      case "/cars":
+        return "Ulaglar boýunça maglumatlar";
+      case "/analytyca":
+        return "Analitika we statistika";
+      case "/users":
+        return "Ulanyjylar bilen işleýän ýer";
+      case "/settings":
+        return "Sazlamalar";
+      case "/car-analytyca":
+        return "Ulaglar Analitika";
+      default:
+        return "Salam Halil";
+    }
+  };
+
+  const greetingText = getGreetingText(location.pathname);
+
   return (
     <div className="header-container">
       <div className="header-left">
         <motion.h2
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8 }} // Increased duration
+          transition={{ duration: 0.8 }}
         >
-          Salam Halil
+          {greetingText}
         </motion.h2>
         <motion.p
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 1.0 }} // Increased duration
+          transition={{ duration: 1.0 }}
           className="header-left-text"
         >
           At-araba nesip etsin
@@ -39,7 +61,7 @@ const Header: React.FC = () => {
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8 }} // Increased duration
+          transition={{ duration: 0.8 }}
         >
           <Input
             className={`search-bar ${searchActive ? "active" : ""}`}
@@ -52,21 +74,21 @@ const Header: React.FC = () => {
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }} // Increased duration and delay
+          transition={{ duration: 0.6, delay: 0.4 }}
         >
           <MailOutlined className="header-icon" />
         </motion.div>
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6, delay: 0.6 }} // Increased duration and delay
+          transition={{ duration: 0.6, delay: 0.6 }}
         >
           <BellOutlined className="header-icon" />
         </motion.div>
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, delay: 0.8 }} // Increased duration and delay
+          transition={{ duration: 0.8, delay: 0.8 }}
           className="profile"
         >
           <img

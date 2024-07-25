@@ -1,45 +1,58 @@
-// src/components/Dashboard.tsx
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import DashboardCards from "./dashboard-cards/DashboardCards";
 import AnnualAverageVehicles from "./annual-avarage-vehicles/AnnualAverageVehicles";
 import TopCars from "./top-cars/TopCars";
 import styled from "styled-components";
+import api from "../../api/axiosConfig";
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 20px; // Space between components
+  gap: 20px;
 
   @media (min-width: 768px) {
-    // Medium screens and up
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: space-between;
   }
 
   @media (min-width: 1024px) {
-    // Large screens and up
     flex-direction: row;
   }
 `;
 
 const CardWrapper = styled.div`
   flex: 1;
-  min-width: 300px; // Minimum width for the components to fit well
-  margin: 10px; // Margin around each card
+  min-width: 300px;
+  margin: 10px;
 `;
 
 const Dashboard: FC = () => {
+  const [dashboardData, setDashboardData] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        console.log("Fetching dashboard data...");
+        const response = await api.get("/api/get-dashboard");
+        setDashboardData(response.data);
+      } catch (error) {
+        console.error("Error fetching dashboard data:", error);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
+
   return (
     <div>
-      <DashboardCards />
-
+      <DashboardCards dashboardData={dashboardData} />
       <Container>
         <CardWrapper>
-          <AnnualAverageVehicles />
+          <AnnualAverageVehicles dashboardData={dashboardData} />
         </CardWrapper>
         <CardWrapper>
-          <TopCars />
+          <TopCars dashboardData={dashboardData} />
         </CardWrapper>
       </Container>
     </div>

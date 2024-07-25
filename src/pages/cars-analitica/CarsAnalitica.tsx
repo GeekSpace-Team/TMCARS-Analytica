@@ -408,7 +408,7 @@ const carData = [
   {
     name: "Volkswagen",
     model: "Golf - 2019",
-    imageUrl: "/images/car.png",
+    imageUrl: "/images/car37.png",
     price: "700K/ ",
     additionalInfo: "ortalama bahasy",
     month: "şu aý",
@@ -416,7 +416,7 @@ const carData = [
   {
     name: "Audi",
     model: "Q7 - 2020",
-    imageUrl: "/images/car.png",
+    imageUrl: "/images/car38.png",
     price: "1.5M/ ",
     additionalInfo: "ortalama bahasy",
     month: "şu aý",
@@ -424,7 +424,7 @@ const carData = [
   {
     name: "BMW",
     model: "M3 - 2021",
-    imageUrl: "/images/car.png",
+    imageUrl: "/images/car39.png",
     price: "1.8M/ ",
     additionalInfo: "ortalama bahasy",
     month: "şu aý",
@@ -432,7 +432,7 @@ const carData = [
   {
     name: "Mercedes",
     model: "E-Class - 2019",
-    imageUrl: "/images/car.png",
+    imageUrl: "/images/car40.png",
     price: "1.7M/ ",
     additionalInfo: "ortalama bahasy",
     month: "şu aý",
@@ -441,7 +441,7 @@ const carData = [
 
 const CarsAnalitica: FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 9;
+  const pageSize = 12;
 
   // Calculate the start and end index for the current page
   const startIndex = (currentPage - 1) * pageSize;
