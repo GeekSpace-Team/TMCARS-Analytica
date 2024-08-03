@@ -2,9 +2,8 @@ import React from "react";
 import { Menu, Dropdown } from "antd";
 import {
   MoreOutlined,
-  EyeOutlined,
-  ImportOutlined,
-  DeleteOutlined,
+  FileExcelOutlined,
+  FilePdfOutlined,
 } from "@ant-design/icons";
 import {
   BarChart,
@@ -15,19 +14,21 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import jsPDF from "jspdf";
+import "jspdf-autotable"; // Ensure this import is present
+import * as XLSX from "xlsx";
+import html2canvas from "html2canvas";
 import {
   Card,
   CardHeader,
   CardTitle,
   ChartContainer,
   ChartTitle,
-  DeleteItem,
   Divider,
   MenuButton,
   StyledMenuItem,
 } from "./annual";
 
-// Define props type
 interface AnnualAverageVehiclesProps {
   dashboardData: {
     price_correlation_year?: {
@@ -48,29 +49,62 @@ const AnnualAverageVehicles: React.FC<AnnualAverageVehiclesProps> = ({
   const [visible, setVisible] = React.useState<boolean>(false);
 
   const handleMenuClick = (e: { key: string }) => {
-    console.log("Menu item clicked:", e);
+    if (e.key === "excel") {
+      downloadExcel();
+    } else if (e.key === "pdf") {
+      downloadPDF();
+    }
   };
 
-  // Menu configuration
+  const downloadExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(
+      priceCorrelationData.map((bucket) => ({
+        Month: bucket.key.toString(),
+        Count: bucket.price_and_year.value,
+      }))
+    );
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(
+      workbook,
+      worksheet,
+      "Annual Average Vehicles"
+    );
+    XLSX.writeFile(workbook, "Annual_Average_Vehicles.xlsx");
+  };
+
+  const downloadPDF = async () => {
+    const pdf = new jsPDF();
+    const tableData = priceCorrelationData.map((bucket) => [
+      bucket.key.toString(),
+      bucket.price_and_year.value,
+    ]);
+    (pdf as any).autoTable({
+      head: [["Month", "Count"]],
+      body: tableData,
+    });
+    const canvas = await html2canvas(
+      document.querySelector("#chart-container") as HTMLElement
+    );
+    const imgData = canvas.toDataURL("image/png");
+    pdf.addPage();
+    pdf.addImage(imgData, "PNG", 10, 10, 180, 100);
+    pdf.save("Annual_Average_Vehicles.pdf");
+  };
+
   const menu = (
     <Menu onClick={handleMenuClick} style={{ border: "none" }}>
-      <StyledMenuItem key="view" icon={<EyeOutlined />}>
-        Doly gormek
+      <StyledMenuItem key="excel" icon={<FileExcelOutlined />}>
+        Download Excel
       </StyledMenuItem>
-      <StyledMenuItem key="save" icon={<ImportOutlined />}>
-        Yatda saklat
+      <StyledMenuItem key="pdf" icon={<FilePdfOutlined />}>
+        Download PDF
       </StyledMenuItem>
-      <DeleteItem key="delete" icon={<DeleteOutlined />}>
-        Pozmak
-      </DeleteItem>
     </Menu>
   );
 
-  // Ensure dashboardData and price_correlation_year exist
   const priceCorrelationData =
     dashboardData?.price_correlation_year?.buckets || [];
 
-  // Transform data for BarChart
   const chartData = priceCorrelationData.map((bucket) => ({
     month: bucket.key.toString(),
     count: bucket.price_and_year.value,
@@ -90,7 +124,7 @@ const AnnualAverageVehicles: React.FC<AnnualAverageVehiclesProps> = ({
         </Dropdown>
       </CardHeader>
       <Divider />
-      <ChartContainer>
+      <ChartContainer id="chart-container">
         <ChartTitle>112,340 TMT</ChartTitle>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={chartData}>
@@ -117,11 +151,7 @@ const AnnualAverageVehicles: React.FC<AnnualAverageVehiclesProps> = ({
                 return null;
               }}
             />
-            <Bar
-              dataKey="count"
-              fill="#4CAF50" // Default color for bars
-              radius={[4, 4, 0, 0]} // Rounded corners for bars
-            />
+            <Bar dataKey="count" fill="#4CAF50" radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </ChartContainer>

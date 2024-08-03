@@ -4,13 +4,11 @@ import { Layout, Spin } from "antd";
 import Sidebar from "./components/sidebar/Sidebar";
 import Header from "./components/header/Header";
 import {
-  Analytica,
   Cars,
   Dashboard,
-  Settings,
-  Users,
   CarsAnalitica,
 } from "./components/lazy/LazyComponent";
+import CarDetails from "./pages/cars-analitica/CarDetails";
 
 const App: React.FC = () => {
   return (
@@ -28,12 +26,10 @@ const App: React.FC = () => {
               }
             >
               <Routes>
-                <Route path="/dashboard" element={<Dashboard />} />
+                <Route index element={<Dashboard />} />
                 <Route path="/cars" element={<Cars />} />
-                <Route path="/analytyca" element={<Analytica />} />
-                <Route path="/users" element={<Users />} />
-                <Route path="/settings" element={<Settings />} />
                 <Route path="/car-analytyca" element={<CarsAnalitica />} />
+                <Route path="/car-analytyca/:carKey" element={<CarDetails />} />
               </Routes>
             </Suspense>
           </Layout.Content>

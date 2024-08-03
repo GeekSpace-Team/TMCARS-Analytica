@@ -1,11 +1,10 @@
-// src/components/Cars.tsx
 import React from "react";
-import TabsHeader from "./TabsHeader";
+import FullTable from "./full-table/FullTable";
 
 const Cars: React.FC = () => {
   return (
     <div>
-      <TabsHeader />
+      <FullTable />
     </div>
   );
 };

@@ -5,26 +5,15 @@ import {
   UserOutlined,
   RocketOutlined,
   SettingOutlined,
+  FileExcelOutlined,
+  FilePdfOutlined,
 } from "@ant-design/icons";
+import { Button } from "antd";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+import * as XLSX from "xlsx";
 import "./dashboardCards.css";
-
-interface Bucket {
-  key: string;
-  doc_count: number;
-  max_price: { value: number };
-  min_price: { value: number };
-  avg_price: { value: number };
-}
-
-interface DashboardData {
-  brand_price_comparison: {
-    buckets: Bucket[];
-  };
-}
-
-interface DashboardCardsProps {
-  dashboardData: DashboardData;
-}
+import { Bucket, DashboardCardsProps } from "../../../types/type";
 
 const DashboardCards: React.FC<DashboardCardsProps> = ({ dashboardData }) => {
   const totalBrands =
@@ -86,27 +75,70 @@ const DashboardCards: React.FC<DashboardCardsProps> = ({ dashboardData }) => {
     },
   ];
 
+  const downloadExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(
+      cardData.map((card) => ({
+        Title: card.title,
+        Count: card.count,
+      }))
+    );
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Dashboard Cards");
+    XLSX.writeFile(workbook, "Dashboard_Cards.xlsx");
+  };
+
+  const downloadPDF = () => {
+    const pdf = new jsPDF();
+    const tableData = cardData.map((card) => [card.title, card.count]);
+    (pdf as any).autoTable({
+      head: [["Title", "Count"]],
+      body: tableData,
+    });
+    pdf.save("Dashboard_Cards.pdf");
+  };
+
   return (
-    <div className="cards-container">
-      {cardData.map((card, index) => (
-        <motion.div
-          key={index}
-          className="card"
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          whileHover={{ scale: 1.05 }}
-          transition={{
-            duration: 0.5,
-            delay: index * 0.1,
-            type: "spring",
-            stiffness: 300,
-          }}
-        >
-          <div className="card-icon">{card.icon}</div>
-          <div className="card-title">{card.title}</div>
-          <div className="card-count">{card.count}</div>
-        </motion.div>
-      ))}
+    <div>
+      <div className="toolbar">
+        <div className="toolbar-title">Dashboard Summary</div>
+        <div className="download-buttons">
+          <Button
+            type="primary"
+            icon={<FileExcelOutlined />}
+            onClick={downloadExcel}
+          >
+            Download Excel
+          </Button>
+          <Button
+            type="primary"
+            icon={<FilePdfOutlined />}
+            onClick={downloadPDF}
+          >
+            Download PDF
+          </Button>
+        </div>
+      </div>
+      <div className="cards-container">
+        {cardData.map((card, index) => (
+          <motion.div
+            key={index}
+            className="card"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            whileHover={{ scale: 1.05 }}
+            transition={{
+              duration: 0.5,
+              delay: index * 0.1,
+              type: "spring",
+              stiffness: 300,
+            }}
+          >
+            <div className="card-icon">{card.icon}</div>
+            <div className="card-title">{card.title}</div>
+            <div className="card-count">{card.count}</div>
+          </motion.div>
+        ))}
+      </div>
     </div>
   );
 };

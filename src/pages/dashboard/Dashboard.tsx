@@ -27,6 +27,13 @@ const CardWrapper = styled.div`
   margin: 10px;
 `;
 
+const Divider = styled.div`
+  width: 100%;
+  height: 2px;
+  background: #e0e0e0;
+  margin: 40px 0;
+`;
+
 const Dashboard: FC = () => {
   const [dashboardData, setDashboardData] = useState<any>(null);
 
@@ -47,6 +54,7 @@ const Dashboard: FC = () => {
   return (
     <div>
       <DashboardCards dashboardData={dashboardData} />
+      <Divider />
       <Container>
         <CardWrapper>
           <AnnualAverageVehicles dashboardData={dashboardData} />

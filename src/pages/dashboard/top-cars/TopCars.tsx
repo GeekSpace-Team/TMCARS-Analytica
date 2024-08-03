@@ -2,11 +2,14 @@ import React, { useEffect } from "react";
 import { Menu, Dropdown } from "antd";
 import {
   MoreOutlined,
-  EyeOutlined,
-  ImportOutlined,
-  DeleteOutlined,
+  FileExcelOutlined,
+  FilePdfOutlined,
 } from "@ant-design/icons";
 import { PieChart, Pie, Tooltip, Cell, ResponsiveContainer } from "recharts";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+import * as XLSX from "xlsx";
+import html2canvas from "html2canvas";
 import {
   CarCost,
   Card,
@@ -18,7 +21,6 @@ import {
   ChartContainer,
   ChartTitle,
   ChartWrapper,
-  DeleteItem,
   DetailsWrapper,
   Divider,
   HeaderTexts,
@@ -26,24 +28,7 @@ import {
   StyledMenuItem,
   Subtitle,
 } from "./top";
-
-// Define the types for the car and dashboard data
-interface CarData {
-  _source: {
-    markasy: string;
-    ady: string;
-    yyly: string;
-    bahasy: number;
-  };
-}
-
-interface DashboardData {
-  top: CarData[];
-}
-
-interface TopCarsProps {
-  dashboardData: DashboardData;
-}
+import { CarData, TopCarsProps } from "../../../types/type";
 
 const TopCars: React.FC<TopCarsProps> = ({ dashboardData }) => {
   const [visible, setVisible] = React.useState<boolean>(false);
@@ -60,20 +45,52 @@ const TopCars: React.FC<TopCarsProps> = ({ dashboardData }) => {
   }, [dashboardData]);
 
   const handleMenuClick = (e: { key: string }) => {
-    console.log("Menu item clicked:", e);
+    if (e.key === "excel") {
+      downloadExcel();
+    } else if (e.key === "pdf") {
+      downloadPDF();
+    }
+  };
+
+  const downloadExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(
+      dashboardData.top.map((car: CarData) => ({
+        Name: `${car._source.markasy} ${car._source.ady} ${car._source.yyly}`,
+        Price: car._source.bahasy || 0,
+      }))
+    );
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Top Cars");
+    XLSX.writeFile(workbook, "Top_Cars.xlsx");
+  };
+
+  const downloadPDF = async () => {
+    const pdf = new jsPDF();
+    const tableData = dashboardData.top.map((car: CarData) => [
+      `${car._source.markasy} ${car._source.ady} ${car._source.yyly}`,
+      car._source.bahasy || 0,
+    ]);
+    (pdf as any).autoTable({
+      head: [["Car", "Price"]],
+      body: tableData,
+    });
+    const canvas = await html2canvas(
+      document.querySelector("#chart-container") as HTMLElement
+    );
+    const imgData = canvas.toDataURL("image/png");
+    pdf.addPage();
+    pdf.addImage(imgData, "PNG", 10, 10, 180, 100);
+    pdf.save("Top_Cars.pdf");
   };
 
   const menu = (
     <Menu onClick={handleMenuClick} style={{ border: "none" }}>
-      <StyledMenuItem key="view" icon={<EyeOutlined />}>
-        Doly gormek
+      <StyledMenuItem key="excel" icon={<FileExcelOutlined />}>
+        Download Excel
       </StyledMenuItem>
-      <StyledMenuItem key="save" icon={<ImportOutlined />}>
-        Yatda saklat
+      <StyledMenuItem key="pdf" icon={<FilePdfOutlined />}>
+        Download PDF
       </StyledMenuItem>
-      <DeleteItem key="delete" icon={<DeleteOutlined />}>
-        Pozmak
-      </DeleteItem>
     </Menu>
   );
 
@@ -105,7 +122,7 @@ const TopCars: React.FC<TopCarsProps> = ({ dashboardData }) => {
         </Dropdown>
       </CardHeader>
       <Divider />
-      <ChartContainer>
+      <ChartContainer id="chart-container">
         <ChartWrapper>
           <ChartTitle>Market Share</ChartTitle>
           <ResponsiveContainer width="100%" height={300}>
