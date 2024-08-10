@@ -91,11 +91,7 @@ const Header: React.FC = () => {
           transition={{ duration: 0.8, delay: 0.8 }}
           className="profile"
         >
-          <img
-            src="/path-to-avatar-image.png"
-            alt="Profile"
-            className="avatar"
-          />
+          <img src="/images/321467.jpg" alt="Profile" className="avatar" />
           <div className="profile-info">
             <p className="profile-name">Halil</p>
             <p className="profile-profession">Developer</p>

@@ -13,7 +13,11 @@ const Sidebar: React.FC = () => {
   return (
     <Sider width={200} className="site-layout-background">
       <div className="sidebar-header">
-        <img src="/path-to-logo.png" alt="Logo" className="sidebar-logo" />
+        <img
+          src="/images/GeekSpaceLogo.svg"
+          alt="Logo"
+          className="sidebar-logo"
+        />
         <h1 className="sidebar-title">Admin Panel</h1>
       </div>
       <Menu
