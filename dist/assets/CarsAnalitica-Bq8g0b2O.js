@@ -1,4 +1,4 @@
-import{p as e,B as h,r,aW as u,j as t,a as y}from"./index-CxjNDpwx.js";import{P as C}from"./Pagination-YXddwHed.js";import"./PurePanel-CYBzSTSp.js";const j=e.div`
+import{p as e,B as h,r,aW as u,j as t,a as y}from"./index-DIsjo2UG.js";import{P as C}from"./Pagination-BRp8KlMy.js";import"./PurePanel-CY7e_Fp4.js";const j=e.div`
   display: grid;
   grid-template-columns: repeat(1, 1fr);
   gap: 20px;
