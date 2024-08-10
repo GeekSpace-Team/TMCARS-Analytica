@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { Dropdown, Menu, DatePicker, AutoComplete, Table } from "antd";
 import { DownloadOutlined } from "@ant-design/icons";
 import jsPDF from "jspdf";
@@ -15,6 +15,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import html2canvas from "html2canvas";
 import {
   ActionButton,
   ActionWrapper,
@@ -35,6 +36,7 @@ const CarFilters: React.FC<CarFiltersProps> = ({ tableData }) => {
   });
 
   const [filteredData, setFilteredData] = useState(tableData);
+  const chartRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const { brand, model, year, startDate, endDate } = filters;
@@ -74,11 +76,11 @@ const CarFilters: React.FC<CarFiltersProps> = ({ tableData }) => {
   ) => {
     if (dates) {
       const [startDate, endDate] = dates;
-      console.log(
-        "Start Date:",
-        startDate ? startDate.format("YYYY-MM-DD") : null
-      );
-      console.log("End Date:", endDate ? endDate.format("YYYY-MM-DD") : null);
+      setFilters((prev) => ({
+        ...prev,
+        startDate,
+        endDate,
+      }));
     }
   };
 
@@ -123,6 +125,18 @@ const CarFilters: React.FC<CarFiltersProps> = ({ tableData }) => {
     XLSX.writeFile(workbook, "table.xlsx");
   };
 
+  const downloadChartImage = () => {
+    if (chartRef.current) {
+      html2canvas(chartRef.current).then((canvas) => {
+        const imgData = canvas.toDataURL("image/png");
+        const link = document.createElement("a");
+        link.href = imgData;
+        link.download = "chart.png";
+        link.click();
+      });
+    }
+  };
+
   const columns = useMemo(
     () => [
       { title: "Brand", dataIndex: "markasy", key: "brand" },
@@ -145,13 +159,18 @@ const CarFilters: React.FC<CarFiltersProps> = ({ tableData }) => {
     </Menu>
   );
 
+  // Helper function to get unique values from an array of objects
+  const getUniqueValues = (data: any[], key: string) => {
+    return Array.from(new Set(data.map((item) => item[key])));
+  };
+
   return (
     <>
       <Container>
         <AutoComplete
           style={{ width: 200 }}
-          options={tableData.map((item) => ({
-            value: item.markasy,
+          options={getUniqueValues(tableData, "markasy").map((brand) => ({
+            value: brand,
           }))}
           placeholder="Select Brand"
           filterOption={(inputValue, option) =>
@@ -162,11 +181,12 @@ const CarFilters: React.FC<CarFiltersProps> = ({ tableData }) => {
         />
         <AutoComplete
           style={{ width: 200, marginLeft: 10 }}
-          options={tableData
-            .filter((item) => item.markasy === filters.brand)
-            .map((item) => ({
-              value: item.ady,
-            }))}
+          options={getUniqueValues(
+            tableData.filter((item) => item.markasy === filters.brand),
+            "ady"
+          ).map((model) => ({
+            value: model,
+          }))}
           placeholder="Select Model"
           filterOption={(inputValue, option) =>
             option!.value.toUpperCase().includes(inputValue.toUpperCase())
@@ -177,14 +197,15 @@ const CarFilters: React.FC<CarFiltersProps> = ({ tableData }) => {
         />
         <AutoComplete
           style={{ width: 200, marginLeft: 10 }}
-          options={tableData
-            .filter(
+          options={getUniqueValues(
+            tableData.filter(
               (item) =>
                 item.markasy === filters.brand && item.ady === filters.model
-            )
-            .map((item) => ({
-              value: item.yyly,
-            }))}
+            ),
+            "yyly"
+          ).map((year) => ({
+            value: year,
+          }))}
           placeholder="Select Year"
           filterOption={(inputValue, option) =>
             option!.value.toUpperCase().includes(inputValue.toUpperCase())
@@ -198,6 +219,12 @@ const CarFilters: React.FC<CarFiltersProps> = ({ tableData }) => {
           <Dropdown overlay={menu} trigger={["click"]}>
             <ActionButton icon={<DownloadOutlined />}>Download</ActionButton>
           </Dropdown>
+          <ActionButton
+            onClick={downloadChartImage}
+            icon={<DownloadOutlined />}
+          >
+            Download Chart
+          </ActionButton>
         </ActionWrapper>
       </Container>
       <ResetButton onClick={resetFilters}>Reset Filters</ResetButton>
@@ -210,24 +237,26 @@ const CarFilters: React.FC<CarFiltersProps> = ({ tableData }) => {
       />
 
       {/* Chart Displaying Table Data */}
-      <ResponsiveContainer width="100%" height={400}>
-        <LineChart
-          data={filteredData}
-          margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="ady" />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          <Line
-            type="monotone"
-            dataKey="bahasy"
-            stroke="#8884d8"
-            activeDot={{ r: 8 }}
-          />
-        </LineChart>
-      </ResponsiveContainer>
+      <div ref={chartRef} style={{ width: "100%", height: 400 }}>
+        <ResponsiveContainer width="100%" height={400}>
+          <LineChart
+            data={filteredData}
+            margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="ady" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Line
+              type="monotone"
+              dataKey="bahasy"
+              stroke="#8884d8"
+              activeDot={{ r: 8 }}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
     </>
   );
 };
