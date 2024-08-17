@@ -38,6 +38,7 @@ export const useCarFilters = (
 
   useEffect(() => {
     const { brand, model, year, startDate, endDate } = filters;
+    console.log(tableData, "tableDta");
     const filtered = tableData.filter((item) => {
       const itemDate = dayjs(item.created_at);
       return (
@@ -50,19 +51,10 @@ export const useCarFilters = (
       );
     });
     setFilteredData(filtered);
-
-    if (currentPage > 1 && filtered.length <= (currentPage - 1) * pageSize) {
-      setCurrentPage(1);
-    }
   }, [filters, tableData, currentPage, pageSize]);
 
   useEffect(() => {
-    const startIndex = (currentPage - 1) * pageSize;
-    const newPaginatedData = filteredData.slice(
-      startIndex,
-      startIndex + pageSize
-    );
-    setPaginatedData(newPaginatedData);
+    setPaginatedData(filteredData);
   }, [filteredData, currentPage, pageSize]);
 
   useEffect(() => {
@@ -117,7 +109,6 @@ export const useCarFilters = (
   };
 
   const handleAddItem = () => {
-    // Logic for adding an item (e.g., opening a modal or form)
     console.log("Add item clicked");
   };
 
@@ -135,6 +126,6 @@ export const useCarFilters = (
     handleYearChange,
     handleDateRangeChange,
     resetFilters,
-    handleAddItem, // Include handleAddItem in the return object
+    handleAddItem,
   };
 };

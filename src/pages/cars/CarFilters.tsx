@@ -1,11 +1,7 @@
 import React from "react";
-import { AutoComplete, Table, Pagination, DatePicker } from "antd";
+import { Table, Pagination } from "antd";
 import { CarFiltersProps } from "../../types/type";
-import {
-  Container,
-  PaginationContainer,
-  ResetButton,
-} from "../../style/carFilter";
+import { PaginationContainer } from "../../style/carFilter";
 import { useCarFilters } from "../../hooks/useCarFilters";
 import {
   CartesianGrid,
@@ -17,10 +13,8 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { getUniqueValues } from "../../hooks/helpers";
+import Filters from "./Filters";
 import ActionButtons from "./ActionButtons";
-
-const { RangePicker } = DatePicker;
 
 const CarFilters: React.FC<CarFiltersProps> = ({
   tableData,
@@ -43,6 +37,9 @@ const CarFilters: React.FC<CarFiltersProps> = ({
     handleAddItem,
   } = useCarFilters(tableData, onPaginationChange);
 
+  // console.log("Current Page:", currentPage);
+  // console.log("Paginated Data:", paginatedData);
+
   return (
     <>
       <ActionButtons
@@ -51,50 +48,15 @@ const CarFilters: React.FC<CarFiltersProps> = ({
         onAddItem={handleAddItem}
       />
 
-      <Container>
-        <AutoComplete
-          style={{ width: 200 }}
-          options={getUniqueValues(tableData, "markasy").map((brand) => ({
-            value: brand,
-          }))}
-          placeholder="Select Brand"
-          filterOption={(inputValue, option) =>
-            option!.value.toUpperCase().includes(inputValue.toUpperCase())
-          }
-          onSelect={handleBrandChange}
-          value={filters.brand}
-        />
-        <AutoComplete
-          style={{ width: 200, marginLeft: 10 }}
-          options={getUniqueValues(
-            tableData.filter((item) => item.markasy === filters.brand),
-            "ady"
-          ).map((model) => ({
-            value: model,
-          }))}
-          placeholder="Select Model"
-          filterOption={(inputValue, option) =>
-            option!.value.toUpperCase().includes(inputValue.toUpperCase())
-          }
-          onSelect={handleModelChange}
-          value={filters.model}
-          disabled={!filters.brand}
-        />
-        <AutoComplete
-          style={{ width: 200, marginLeft: 10 }}
-          options={getUniqueValues(tableData, "yyly").map((year) => ({
-            value: year,
-          }))}
-          placeholder="Select Year"
-          filterOption={(inputValue, option) =>
-            option!.value.toUpperCase().includes(inputValue.toUpperCase())
-          }
-          onSelect={handleYearChange}
-          value={filters.year}
-        />
-        <RangePicker onChange={handleDateRangeChange} />
-        <ResetButton onClick={resetFilters}>Reset Filters</ResetButton>
-      </Container>
+      <Filters
+        tableData={tableData}
+        filters={filters}
+        handleBrandChange={handleBrandChange}
+        handleModelChange={handleModelChange}
+        handleYearChange={handleYearChange}
+        handleDateRangeChange={handleDateRangeChange}
+        resetFilters={resetFilters}
+      />
 
       <Table
         id="table-id"
@@ -103,11 +65,12 @@ const CarFilters: React.FC<CarFiltersProps> = ({
         rowKey="key"
         pagination={false}
       />
+
       <PaginationContainer>
         <Pagination
           current={currentPage}
           pageSize={pageSize}
-          total={1000}
+          total={10000}
           onChange={handlePaginationChange}
         />
       </PaginationContainer>
