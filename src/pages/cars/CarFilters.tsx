@@ -1,5 +1,12 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
-import { Dropdown, Menu, DatePicker, AutoComplete, Table } from "antd";
+import {
+  Dropdown,
+  Menu,
+  DatePicker,
+  AutoComplete,
+  Table,
+  Pagination,
+} from "antd";
 import { DownloadOutlined, PlusOutlined } from "@ant-design/icons";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
@@ -21,6 +28,7 @@ import {
   AddButton,
   AddDownloadContainer,
   Container,
+  PaginationContainer,
   ResetButton,
 } from "./carFilter";
 import { CarFiltersProps } from "../../types/type";
@@ -37,6 +45,8 @@ const CarFilters: React.FC<CarFiltersProps> = ({ tableData }) => {
   });
 
   const [filteredData, setFilteredData] = useState(tableData);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   const chartRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -85,6 +95,11 @@ const CarFilters: React.FC<CarFiltersProps> = ({ tableData }) => {
     }
   };
 
+  const handleChange = (page: number, pageSize: number) => {
+    setCurrentPage(page);
+    setPageSize(pageSize);
+  };
+
   const resetFilters = () => {
     setFilters({
       brand: null,
@@ -93,6 +108,7 @@ const CarFilters: React.FC<CarFiltersProps> = ({ tableData }) => {
       startDate: null,
       endDate: null,
     });
+    setCurrentPage(1); // Reset to the first page when filters are reset
   };
 
   const downloadFile = (fileType: "pdf" | "excel") => {
@@ -165,6 +181,10 @@ const CarFilters: React.FC<CarFiltersProps> = ({ tableData }) => {
     return Array.from(new Set(data.map((item) => item[key])));
   };
 
+  // Calculate paginated data
+  const startIndex = (currentPage - 1) * pageSize;
+  const paginatedData = filteredData.slice(startIndex, startIndex + pageSize);
+
   return (
     <>
       <AddDownloadContainer>
@@ -235,11 +255,19 @@ const CarFilters: React.FC<CarFiltersProps> = ({ tableData }) => {
 
       <Table
         id="table-id"
-        dataSource={filteredData}
+        dataSource={paginatedData}
         columns={columns}
         rowKey="id"
-        pagination={{ pageSize: 100 }}
+        pagination={false}
       />
+      <PaginationContainer>
+        <Pagination
+          current={currentPage}
+          pageSize={pageSize}
+          total={1000}
+          onChange={handleChange}
+        />
+      </PaginationContainer>
 
       {/* Chart Displaying Table Data */}
       <div ref={chartRef} style={{ width: "100%", height: 400 }}>

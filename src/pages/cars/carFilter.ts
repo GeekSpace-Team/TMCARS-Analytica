@@ -139,3 +139,9 @@ export const ResetButton = styled(Button)`
     background-color: #cc4e26;
   }
 `;
+
+export const PaginationContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+`;
