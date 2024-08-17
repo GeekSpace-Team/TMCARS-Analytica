@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import { Dropdown, Menu, DatePicker, AutoComplete, Table } from "antd";
-import { DownloadOutlined } from "@ant-design/icons";
+import { DownloadOutlined, PlusOutlined } from "@ant-design/icons";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import * as XLSX from "xlsx";
@@ -18,7 +18,8 @@ import {
 import html2canvas from "html2canvas";
 import {
   ActionButton,
-  ActionWrapper,
+  AddButton,
+  AddDownloadContainer,
   Container,
   ResetButton,
 } from "./carFilter";
@@ -166,6 +167,20 @@ const CarFilters: React.FC<CarFiltersProps> = ({ tableData }) => {
 
   return (
     <>
+      <AddDownloadContainer>
+        <div style={{ display: "flex", gap: "20px" }}>
+          <Dropdown overlay={menu} trigger={["click"]}>
+            <ActionButton icon={<DownloadOutlined />}>Download</ActionButton>
+          </Dropdown>
+          <ActionButton
+            onClick={downloadChartImage}
+            icon={<DownloadOutlined />}
+          >
+            Download Chart
+          </ActionButton>
+        </div>
+        <AddButton icon={<PlusOutlined />}>Add Item</AddButton>
+      </AddDownloadContainer>
       <Container>
         <AutoComplete
           style={{ width: 200 }}
@@ -214,26 +229,16 @@ const CarFilters: React.FC<CarFiltersProps> = ({ tableData }) => {
           value={filters.year}
           disabled={!filters.model}
         />
-        <ActionWrapper>
-          <RangePicker onChange={handleDateRangeChange} />
-          <Dropdown overlay={menu} trigger={["click"]}>
-            <ActionButton icon={<DownloadOutlined />}>Download</ActionButton>
-          </Dropdown>
-          <ActionButton
-            onClick={downloadChartImage}
-            icon={<DownloadOutlined />}
-          >
-            Download Chart
-          </ActionButton>
-        </ActionWrapper>
+        <RangePicker onChange={handleDateRangeChange} />
+        <ResetButton onClick={resetFilters}>Reset Filters</ResetButton>
       </Container>
-      <ResetButton onClick={resetFilters}>Reset Filters</ResetButton>
 
       <Table
         id="table-id"
         dataSource={filteredData}
         columns={columns}
         rowKey="id"
+        pagination={{ pageSize: 100 }}
       />
 
       {/* Chart Displaying Table Data */}
