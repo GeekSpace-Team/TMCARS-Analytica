@@ -55,6 +55,7 @@ export interface DataType {
 
 export interface CarFiltersProps {
   tableData: any[];
+  onPaginationChange: any;
 }
 
 // FuulTable types ends here ................................................................

@@ -35,7 +35,10 @@ import { CarFiltersProps } from "../../types/type";
 
 const { RangePicker } = DatePicker;
 
-const CarFilters: React.FC<CarFiltersProps> = ({ tableData }) => {
+const CarFilters: React.FC<CarFiltersProps> = ({
+  tableData,
+  onPaginationChange,
+}) => {
   const [filters, setFilters] = useState({
     brand: null as string | null,
     model: null as string | null,
@@ -46,7 +49,7 @@ const CarFilters: React.FC<CarFiltersProps> = ({ tableData }) => {
 
   const [filteredData, setFilteredData] = useState(tableData);
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(20);
   const chartRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -63,7 +66,12 @@ const CarFilters: React.FC<CarFiltersProps> = ({ tableData }) => {
       );
     });
     setFilteredData(filtered);
-  }, [filters, tableData]);
+    onPaginationChange(1, pageSize); // Reset to page 1 when filters change
+  }, [filters, tableData, onPaginationChange, pageSize]);
+
+  useEffect(() => {
+    onPaginationChange(currentPage, pageSize); // Call onPaginationChange when currentPage or pageSize changes
+  }, [currentPage, pageSize, onPaginationChange]);
 
   const handleBrandChange = (value: string) => {
     setFilters((prev) => ({
@@ -95,7 +103,7 @@ const CarFilters: React.FC<CarFiltersProps> = ({ tableData }) => {
     }
   };
 
-  const handleChange = (page: number, pageSize: number) => {
+  const handlePaginationChange = (page: number, pageSize: number) => {
     setCurrentPage(page);
     setPageSize(pageSize);
   };
@@ -198,8 +206,9 @@ const CarFilters: React.FC<CarFiltersProps> = ({ tableData }) => {
           >
             Download Chart
           </ActionButton>
+          <AddButton icon={<PlusOutlined />}>Add Item</AddButton>
         </div>
-        <AddButton icon={<PlusOutlined />}>Add Item</AddButton>
+        <ResetButton onClick={resetFilters}>Reset Filters</ResetButton>
       </AddDownloadContainer>
       <Container>
         <AutoComplete
@@ -250,14 +259,13 @@ const CarFilters: React.FC<CarFiltersProps> = ({ tableData }) => {
           disabled={!filters.model}
         />
         <RangePicker onChange={handleDateRangeChange} />
-        <ResetButton onClick={resetFilters}>Reset Filters</ResetButton>
       </Container>
 
       <Table
         id="table-id"
         dataSource={paginatedData}
         columns={columns}
-        rowKey="id"
+        rowKey="key"
         pagination={false}
       />
       <PaginationContainer>
@@ -265,28 +273,19 @@ const CarFilters: React.FC<CarFiltersProps> = ({ tableData }) => {
           current={currentPage}
           pageSize={pageSize}
           total={1000}
-          onChange={handleChange}
+          onChange={handlePaginationChange}
         />
       </PaginationContainer>
 
-      {/* Chart Displaying Table Data */}
-      <div ref={chartRef} style={{ width: "100%", height: 400 }}>
-        <ResponsiveContainer width="100%" height={400}>
-          <LineChart
-            data={filteredData}
-            margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-          >
+      <div ref={chartRef} style={{ height: 400, marginTop: 20 }}>
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={filteredData}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="ady" />
+            <XAxis dataKey="created_at" />
             <YAxis />
             <Tooltip />
             <Legend />
-            <Line
-              type="monotone"
-              dataKey="bahasy"
-              stroke="#8884d8"
-              activeDot={{ r: 8 }}
-            />
+            <Line type="monotone" dataKey="bahasy" stroke="#8884d8" />
           </LineChart>
         </ResponsiveContainer>
       </div>
