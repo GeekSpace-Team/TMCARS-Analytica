@@ -9,16 +9,14 @@ export interface CarData {
   };
 }
 
-export interface DashboardData {
+export interface TopCarsDashboardData {
   top: CarData[];
 }
 
 export interface TopCarsProps {
-  dashboardData: DashboardData;
+  dashboardData: TopCarsDashboardData;
 }
 
-// Dashboard Top Cars types ends here .............................................................
-// ===============================================================================================
 // Dashboard Cards types starts here ...................................................................
 
 export interface Bucket {
@@ -29,19 +27,16 @@ export interface Bucket {
   avg_price: { value: number };
 }
 
-export interface DashboardData {
+export interface BrandPriceComparisonDashboardData {
   brand_price_comparison: {
     buckets: Bucket[];
   };
 }
 
 export interface DashboardCardsProps {
-  dashboardData: DashboardData;
+  dashboardData: BrandPriceComparisonDashboardData;
 }
 
-// Dashboard Cards types ends here ...................................................................
-
-// ????????????????????????????????????????????????????????????????????????????????????????????????????
 // FuulTable types starts here ................................................................
 
 export interface DataType {
@@ -54,8 +49,8 @@ export interface DataType {
 }
 
 export interface CarFiltersProps {
-  tableData: any[];
-  onPaginationChange: any;
+  tableData: DataType[];
+  onPaginationChange: (page: number, pageSize: number) => void;
 }
 
 // FuulTable types ends here ................................................................
