@@ -50,9 +50,23 @@ export interface DataType {
   created_at: string;
 }
 
+export interface DataFilter {
+  brand?: string | undefined;
+  text?: string | undefined;
+  start_date?: string | undefined;
+  end_date?: string | undefined;
+  start_price?: number | undefined;
+  end_price?: number | undefined;
+  min_year?: number | undefined;
+  max_year?: number | undefined;
+  page?: number | undefined;
+}
+
 export interface CarFiltersProps {
   tableData: DataType[];
   onPaginationChange: (page: number, pageSize: number) => void;
+  filter: DataFilter;
+  onFilter: (f: DataFilter) => void;
 }
 
 // FuulTable types ends here ................................................................

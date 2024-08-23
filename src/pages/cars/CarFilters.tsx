@@ -17,6 +17,8 @@ import Filters from "./Filters";
 import ActionButtons from "./ActionButtons";
 
 const CarFilters: React.FC<CarFiltersProps> = ({
+  filter,
+  onFilter,
   tableData,
   onPaginationChange,
 }) => {
@@ -51,11 +53,40 @@ const CarFilters: React.FC<CarFiltersProps> = ({
       <Filters
         tableData={tableData}
         filters={filters}
-        handleBrandChange={handleBrandChange}
-        handleModelChange={handleModelChange}
-        handleYearChange={handleYearChange}
-        handleDateRangeChange={handleDateRangeChange}
-        resetFilters={resetFilters}
+        handleBrandChange={(brand) => {
+          onFilter({
+            ...filter,
+            brand: brand,
+          });
+        }}
+        handleModelChange={(model) => {
+          onFilter({
+            ...filter,
+            text: model,
+          });
+        }}
+        handleYearChange={(year) => {
+          onFilter({
+            ...filter,
+            min_year: Number(year),
+            max_year: Number(year),
+          });
+        }}
+        handleDateRangeChange={(dates) => {
+          if (dates) {
+            const [startDate, endDate] = dates;
+            onFilter({
+              ...filter,
+              start_date: startDate?.format("YYYY-MM-DD"),
+              end_date: endDate?.format("YYYY-MM-DD"),
+            });
+          }
+        }}
+        resetFilters={() => {
+          onFilter({
+            page: 1,
+          });
+        }}
       />
 
       <Table

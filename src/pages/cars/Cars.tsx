@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import CarFilters from "./CarFilters";
-import { DataType } from "../../types/type";
+import { DataFilter, DataType } from "../../types/type";
 import api from "../../api/axiosConfig";
 
 const Cars: React.FC = () => {
@@ -8,16 +8,21 @@ const Cars: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(20);
+  const [filter, setFilter] = useState<DataFilter>({
+    page: 1,
+  });
 
   const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
     return date.toISOString().split("T")[0];
   };
 
-  const fetchData = async (page: number, size: number) => {
+  const fetchData = async (filter: DataFilter) => {
     setIsLoading(true);
     try {
-      const response = await api.get(`/api/all-logs?page=${page}&size=${size}`);
+      const response = await api.get(`/api/all-logs`, {
+        params: filter,
+      });
       const formattedData: DataType[] = response.data.hits.hits.map(
         (item: any) => ({
           key: item._id,
@@ -38,16 +43,24 @@ const Cars: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchData(currentPage, pageSize);
+    fetchData(filter);
+  }, [filter]);
+
+  useEffect(() => {
+    setFilter({
+      ...filter,
+      page: currentPage,
+    });
   }, [currentPage, pageSize]);
 
   const handlePaginationChange = (page: number, pageSize: number) => {
     setCurrentPage(page);
-    setPageSize(pageSize);
   };
   return (
     <div style={{ padding: 20, boxSizing: "border-box" }}>
       <CarFilters
+        filter={filter}
+        onFilter={(f) => setFilter(f)}
         tableData={data}
         onPaginationChange={handlePaginationChange}
       />
