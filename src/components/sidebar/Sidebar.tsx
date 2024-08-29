@@ -1,7 +1,7 @@
 // src/components/Sidebar.tsx
 import React from "react";
 import { Layout, Menu } from "antd";
-import { DashboardOutlined, CarOutlined } from "@ant-design/icons";
+import { CarOutlined } from "@ant-design/icons";
 import { Link, useLocation } from "react-router-dom";
 import "./sidebar.css";
 
@@ -25,11 +25,11 @@ const Sidebar: React.FC = () => {
         selectedKeys={[location.pathname]}
         style={{ height: "100%", borderRight: 0 }}
       >
-        <Menu.Item key="/" icon={<DashboardOutlined />}>
+        {/* <Menu.Item key="/" icon={<DashboardOutlined />}>
           <Link to="/">Dashboard</Link>
-        </Menu.Item>
-        <Menu.Item key="/cars" icon={<CarOutlined />}>
-          <Link to="/cars">Cars</Link>
+        </Menu.Item> */}
+        <Menu.Item key="/" icon={<CarOutlined />}>
+          <Link to="/">Cars</Link>
         </Menu.Item>
         <Menu.Item key="/cars-statistica" icon={<CarOutlined />}>
           <Link to="/cars-statistica">Cars Statistica</Link>

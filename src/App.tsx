@@ -6,7 +6,7 @@ import Header from "./components/header/Header";
 import {
   Cars,
   CarsStatistica,
-  Dashboard,
+  // Dashboard,
 } from "./components/lazy/LazyComponent";
 
 const App: React.FC = () => {
@@ -25,8 +25,8 @@ const App: React.FC = () => {
               }
             >
               <Routes>
-                <Route index element={<Dashboard />} />
-                <Route path="/cars" element={<Cars />} />
+                {/* <Route index element={<Dashboard />} /> */}
+                <Route index element={<Cars />} />
                 <Route path="/cars-statistica" element={<CarsStatistica />} />
               </Routes>
             </Suspense>

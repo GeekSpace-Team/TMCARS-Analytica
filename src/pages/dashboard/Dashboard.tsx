@@ -2,37 +2,8 @@ import { FC, useEffect, useState } from "react";
 import DashboardCards from "./dashboard-cards/DashboardCards";
 import AnnualAverageVehicles from "./annual-avarage-vehicles/AnnualAverageVehicles";
 import TopCars from "./top-cars/TopCars";
-import styled from "styled-components";
 import api from "../../api/axiosConfig";
-
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-
-  @media (min-width: 768px) {
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-between;
-  }
-
-  @media (min-width: 1024px) {
-    flex-direction: row;
-  }
-`;
-
-const CardWrapper = styled.div`
-  flex: 1;
-  min-width: 300px;
-  margin: 10px;
-`;
-
-const Divider = styled.div`
-  width: 100%;
-  height: 2px;
-  background: #e0e0e0;
-  margin: 40px 0;
-`;
+import { CardWrapper, Divider, Container } from "../../style/dashboardStyle";
 
 const Dashboard: FC = () => {
   const [dashboardData, setDashboardData] = useState<any>(null);
