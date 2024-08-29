@@ -3,7 +3,11 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Layout, Spin } from "antd";
 import Sidebar from "./components/sidebar/Sidebar";
 import Header from "./components/header/Header";
-import { Cars, Dashboard } from "./components/lazy/LazyComponent";
+import {
+  Cars,
+  CarsStatistica,
+  Dashboard,
+} from "./components/lazy/LazyComponent";
 
 const App: React.FC = () => {
   return (
@@ -23,6 +27,7 @@ const App: React.FC = () => {
               <Routes>
                 <Route index element={<Dashboard />} />
                 <Route path="/cars" element={<Cars />} />
+                <Route path="/cars-statistica" element={<CarsStatistica />} />
               </Routes>
             </Suspense>
           </Layout.Content>

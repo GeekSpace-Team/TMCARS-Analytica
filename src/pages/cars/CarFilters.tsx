@@ -31,11 +31,6 @@ const CarFilters: React.FC<CarFiltersProps> = ({
     pageSize,
     columns,
     handlePaginationChange,
-    handleBrandChange,
-    handleModelChange,
-    handleYearChange,
-    handleDateRangeChange,
-    resetFilters,
     handleAddItem,
   } = useCarFilters(tableData, onPaginationChange);
 

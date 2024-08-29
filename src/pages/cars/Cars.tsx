@@ -7,7 +7,6 @@ const Cars: React.FC = () => {
   const [data, setData] = useState<DataType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(20);
   const [filter, setFilter] = useState<DataFilter>({
     page: 1,
   });
@@ -51,11 +50,12 @@ const Cars: React.FC = () => {
       ...filter,
       page: currentPage,
     });
-  }, [currentPage, pageSize]);
+  }, [currentPage]);
 
-  const handlePaginationChange = (page: number, pageSize: number) => {
+  const handlePaginationChange = (page: number) => {
     setCurrentPage(page);
   };
+
   return (
     <div style={{ padding: 20, boxSizing: "border-box" }}>
       <CarFilters

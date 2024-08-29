@@ -31,9 +31,9 @@ const Sidebar: React.FC = () => {
         <Menu.Item key="/cars" icon={<CarOutlined />}>
           <Link to="/cars">Cars</Link>
         </Menu.Item>
-        {/* <Menu.Item key="/car-analytyca" icon={<CarOutlined />}>
-          <Link to="/car-analytyca">Cars Analitica</Link>
-        </Menu.Item> */}
+        <Menu.Item key="/cars-statistica" icon={<CarOutlined />}>
+          <Link to="/cars-statistica">Cars Statistica</Link>
+        </Menu.Item>
       </Menu>
     </Sider>
   );
